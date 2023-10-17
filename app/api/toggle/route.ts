@@ -1,24 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createActor, createMachine } from 'xstate'
+import { createActor } from 'xstate'
+import { toggleMachine } from '@/lib/machines/toggle'
 
 let globalState: any
-
-export const toggleMachine = createMachine({
-    id: 'toggle',
-    initial: 'inactive',
-    states: {
-        inactive: {
-            on: {
-                toggle: 'active',
-            },
-        },
-        active: {
-            on: {
-                toggle: 'inactive',
-            },
-        },
-    },
-})
 
 export async function POST(req: NextRequest) {
     let actor = createActor(toggleMachine, {
