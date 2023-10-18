@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^4.25.5",
     "@vercel/kv": "^0.2.3",
     "next": "13.5.5",
     "react": "^18",
@@ -20,6 +21,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10",
+    "daisyui": "^3.9.3",
     "eslint": "^8",
     "eslint-config-next": "13.5.5",
     "postcss": "^8",

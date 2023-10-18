@@ -1,11 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createActor } from 'xstate'
 import { kv } from '@vercel/kv'
+import { auth } from '@clerk/nextjs'
 import { toggleMachine } from '@/lib/machines/toggle'
 
 export async function POST(req: NextRequest) {
     try {
-        let state: any = await kv.get('toggle')
+        const { userId } = auth()
+
+        if (!userId) {
+            return new NextResponse('Unauthorized', { status: 401 })
+        }
+
+        console.log('userId:', userId)
+
+        let state: any = await kv.hget(userId, 'toggle')
 
         let actor = createActor(toggleMachine, {
             state: state,
@@ -25,13 +34,12 @@ export async function POST(req: NextRequest) {
         actor.send({ type: 'toggle' })
 
         state = actor.getPersistedState()
-        kv.set('toggle', state)
+        kv.hset(userId, { toggle: state })
 
         return NextResponse.json({ state: state.value })
     } catch (err) {
-        console.error('error:', (err as Error).message)
         return NextResponse.json(
-            { error: 'Internal Server Error' },
+            { error: (err as Error).message },
             { status: 500 }
         )
     }
