@@ -16,6 +16,8 @@ export async function POST(req: NextRequest) {
 
         let state: any = await kv.hget(userId, 'toggle')
 
+        console.log('stored state:', state)
+
         let actor = createActor(toggleMachine, {
             state: state,
         })
@@ -34,6 +36,7 @@ export async function POST(req: NextRequest) {
         actor.send({ type: 'toggle' })
 
         state = actor.getPersistedState()
+        console.log('new state:', state)
         kv.hset(userId, { toggle: state })
 
         return NextResponse.json({ state: state.value })

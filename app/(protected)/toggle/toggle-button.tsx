@@ -6,17 +6,18 @@ export default function ToggleButton() {
     const [state, setState] = useState('inactive')
 
     const handleToggle = async () => {
-        console.log('toggle')
-
         const response = await fetch('/api/toggle', {
             method: 'POST',
             body: JSON.stringify({}),
         })
 
+        let json = await response.json()
+        console.log('toggle', json)
+
         if (response.ok) {
-            let json = await response.json()
             setState(json.state)
         } else {
+            console.log('error:', json)
             setState('error')
         }
     }
